@@ -6,7 +6,7 @@ import {
   Post,
   Param,
   Get,
-  Put,
+  Patch,
   Delete,
   Res,
   BodyOptions,
@@ -44,7 +44,7 @@ export default class UserController {
     return Responses.Success(res, { user });
   }
 
-  @Put('/:id')
+  @Patch('/:id')
   public async update(
     @Param('id') id: string,
     @Body(whitelist) request: UpdateUserRequest,
@@ -61,8 +61,8 @@ export default class UserController {
   @Delete('/:id')
   public async delete(@Param('id') id: string, @Res() res: Response) {
     const user = await UserModel.findOneAndUpdate(
-      { _id: id, isDeleted: { $ne: true } },
-      { isDeleted: true }
+      { _id: id, active: { $ne: false } },
+      { active: false }
     );
     if (!user) throw new AppError('User not found!', 404);
     return Responses.Success(res, null, 'User has been deleted!');
