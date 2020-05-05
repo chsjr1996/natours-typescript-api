@@ -1,0 +1,11 @@
+# Build
+dist
+
+# Envs
+.env
+
+# Editors and IDEs
+.vscode
+
+# Deps
+node_modules
