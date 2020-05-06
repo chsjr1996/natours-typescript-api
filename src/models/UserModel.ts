@@ -1,5 +1,4 @@
 import mongoose, { Document, Schema, Model, HookNextFunction } from 'mongoose';
-import validator from 'validator';
 import IModel from './IModel';
 import Auth from '../utils/helpers/Auth';
 
