@@ -2,14 +2,14 @@ import { Request, Response } from 'express';
 import {
   JsonController,
   UseBefore,
-  Body,
-  BodyParam,
-  UploadedFile,
   Post,
-  Param,
   Get,
   Patch,
   Delete,
+  Param,
+  Body,
+  BodyParam,
+  UploadedFile,
   Req,
   Res,
 } from 'routing-controllers';
@@ -63,11 +63,8 @@ export default class UserController {
    */
 
   @Post()
-  public async create(
-    @Body() request: CreateUserRequest,
-    @Res() res: Response
-  ) {
-    const user = await UserModel.create(request);
+  public async create(@Body() req: CreateUserRequest, @Res() res: Response) {
+    const user = await UserModel.create(req);
     return Responses.Success(res, user);
   }
 
@@ -87,10 +84,10 @@ export default class UserController {
   @Patch('/:id')
   public async update(
     @Param('id') id: string,
-    @Body(whitelist) request: UpdateUserRequest,
+    @Body(whitelist) req: UpdateUserRequest,
     @Res() res: Response
   ) {
-    const user = await UserModel.findByIdAndUpdate(id, request, {
+    const user = await UserModel.findByIdAndUpdate(id, req, {
       new: true,
       runValidators: true,
     });
