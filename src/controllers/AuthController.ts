@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { JsonController, Body, Post, Res } from 'routing-controllers';
-import LoginRequest from '../requests/LoginRequest';
+import LoginRequest from '../requests/user/LoginRequest';
 import AppError from '../utils/helpers/AppError';
 import Auth from '../utils/helpers/Auth';
 import UserModel from '../models/UserModel';

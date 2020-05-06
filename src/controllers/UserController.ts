@@ -1,19 +1,21 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import {
   JsonController,
   UseBefore,
   Body,
+  BodyParam,
+  UploadedFile,
   Post,
   Param,
   Get,
   Patch,
   Delete,
+  Req,
   Res,
-  BodyOptions,
 } from 'routing-controllers';
 import AuthMiddleware from '../middlewares/AuthMiddleware';
-import CreateUserRequest from '../requests/CreateUserRequest';
-import UpdateUserRequest from '../requests/UpdateUserRequest';
+import CreateUserRequest from '../requests/user/CreateUserRequest';
+import UpdateUserRequest from '../requests/user/UpdateUserRequest';
 import UserModel from '../models/UserModel';
 import Responses from '../utils/builders/Responses';
 import AppError from '../utils/helpers/AppError';
@@ -22,6 +24,44 @@ import { whitelist } from '../utils/validations/config';
 @JsonController('/users')
 @UseBefore(AuthMiddleware)
 export default class UserController {
+  /**
+   * Special operations
+   */
+  @Get('/spc/me')
+  public async getMe(@Req() req: Request, @Res() res: Response) {
+    const user = await UserModel.findById(req.user.id);
+    return Responses.Success(res, user);
+  }
+
+  @Patch('/spc/updateMe')
+  public async updateMe(
+    @BodyParam('name') name: string,
+    @UploadedFile('photo') photo: any,
+    @Req() req: Request,
+    @Res() res: Response
+  ) {
+    const user = await UserModel.findByIdAndUpdate(
+      req.user.id,
+      { name },
+      { new: true }
+    );
+    return Responses.Success(res, user);
+  }
+
+  @Delete('/spc/deleteMe')
+  public async deleteMe(@Req() req: Request, @Res() res: Response) {
+    const user = await UserModel.findOneAndUpdate(
+      { _id: req.user.id, active: { $ne: false } },
+      { active: false }
+    );
+    if (!user) throw new AppError('User not found!', 404);
+    return Responses.Success(res, null, 'Your account has been deleted!');
+  }
+
+  /**
+   * CRUD operations
+   */
+
   @Post()
   public async create(
     @Body() request: CreateUserRequest,

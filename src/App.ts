@@ -33,6 +33,7 @@ export default class App {
     if (this.isDev) {
       this.app.use(morgan('dev'));
     }
+    this.app.use(express.urlencoded({ extended: false }));
   }
 
   /**
