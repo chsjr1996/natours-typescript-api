@@ -9,7 +9,7 @@ interface IUserSchema extends Document {
   photo: string;
   role: string;
   password: string;
-  passwordConfirm: string;
+  passwordConfirm?: string;
   passwordChangedAt: Date;
   passwordResetToken: string;
   passwordResetExpires: Date;
@@ -84,6 +84,7 @@ class UserModel implements IModel {
     ) {
       if (!this.isModified('password')) next();
       this.password = await Auth.hash(this.password);
+      this.passwordConfirm = undefined;
     });
 
     // Not show inactive
