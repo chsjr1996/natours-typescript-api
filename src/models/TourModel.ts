@@ -158,7 +158,7 @@ class TourModel implements IModel {
   }
 
   public initModel() {
-    return mongoose.model<ITourSchema>('Tours', this.schema);
+    return mongoose.model<ITourSchema>('Tour', this.schema);
   }
 }
 

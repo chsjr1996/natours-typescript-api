@@ -118,7 +118,7 @@ class UserModel implements IModel {
   }
 
   public initModel() {
-    return mongoose.model<IUserSchema>('Users', this.schema);
+    return mongoose.model<IUserSchema>('User', this.schema);
   }
 }
 
