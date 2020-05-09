@@ -37,6 +37,14 @@ export default class TourController {
   /**
    * Special operations
    */
+  @Get('/spc/top-5-cheap')
+  public async getTopCheap(@Req() req: Request, @Res() res: Response) {
+    const reqClone: Request = Object.create(req);
+    reqClone.query.limit = '5';
+    req.query.sort = '-ratingsAverage,price';
+    req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+    return this.getAll(reqClone, res);
+  }
 
   /**
    * CRUD operations
