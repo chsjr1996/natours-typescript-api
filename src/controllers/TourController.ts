@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import multer from 'multer';
 import {
   JsonController,
@@ -42,6 +42,7 @@ export default class TourController {
    * CRUD operations
    */
 
+  // TODO: Type req body
   @Post()
   public async create(@Body() req: any, @Res() res: Response) {
     const tour = await TourModel.create(req);
@@ -76,7 +77,7 @@ export default class TourController {
       runValidators: true,
     });
     if (!tour) throw new AppError('Tour not found!', 404);
-    return Responses.Success(res, tour);
+    return Responses.Success(res, { tour });
   }
 
   @Delete('/:id')
