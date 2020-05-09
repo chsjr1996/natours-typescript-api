@@ -77,8 +77,6 @@ export default class AdvancedQueries<T, DocT extends Document> {
     const limit = parseInt(this.reqQuery.limit as string, 10) * 1 || 100;
     const skip = (page - 1) * limit;
 
-    console.table({ page, limit, skip });
-
     this.docQuery.skip(skip).limit(limit);
     return this;
   }
