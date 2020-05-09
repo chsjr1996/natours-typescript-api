@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import multer from 'multer';
 import {
   JsonController,
@@ -50,9 +50,11 @@ export default class TourController {
   }
 
   @Get()
-  public async getAll(@Res() res: Response) {
-    const tours = await new ModelFactory<ITourSchema>(TourModel).getAll();
-    return Responses.Success(res, { tours });
+  public async getAll(@Req() req: Request, @Res() res: Response) {
+    const tours = await new ModelFactory<ITourSchema>(TourModel).getAll(
+      req.query
+    );
+    return Responses.Success(res, { results: tours.length, tours });
   }
 
   @Get('/:id')

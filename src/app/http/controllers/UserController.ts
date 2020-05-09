@@ -70,8 +70,10 @@ export default class UserController {
   }
 
   @Get()
-  public async getAll(@Res() res: Response) {
-    const users = await new ModelFactory<IUserSchema>(UserModel).getAll();
+  public async getAll(@Req() req: Request, @Res() res: Response) {
+    const users = await new ModelFactory<IUserSchema>(UserModel).getAll(
+      req.query
+    );
     return Responses.Success(res, { users });
   }
 

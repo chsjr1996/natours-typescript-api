@@ -5,6 +5,8 @@ import {
   MongooseUpdateQuery,
   QueryFindOneAndUpdateOptions,
 } from 'mongoose';
+import { Query } from 'express-serve-static-core';
+import AdvancedQueries from '../builders/AdvancedQueries';
 import AppError from '../helpers/AppError';
 
 export default class ModelFactory<T extends Document> {
@@ -42,9 +44,17 @@ export default class ModelFactory<T extends Document> {
 
   /**
    * List all documents
+   *
+   * @param reqQuery The req.query object from Express.JS
    */
-  public async getAll() {
-    return await this.model.find();
+  public async getAll(reqQuery: Query) {
+    const advQueries = new AdvancedQueries(this.model.find(), reqQuery)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+
+    return await advQueries.docQuery;
   }
 
   /**

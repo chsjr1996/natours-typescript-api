@@ -1,7 +1,8 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import {
   JsonController,
   UseBefore,
+  Req,
   Res,
   Post,
   Get,
@@ -14,7 +15,6 @@ import AuthMiddleware from '../middlewares/AuthMiddleware';
 import ReviewModel, { IReviewSchema } from '../../models/ReviewModel';
 import ModelFactory from '../../factories/ModelFactory';
 import Responses from '../../builders/Responses';
-import AppError from '../../helpers/AppError';
 
 @JsonController('/reviews')
 @UseBefore(AuthMiddleware)
@@ -33,8 +33,10 @@ export default class ReviewController {
   }
 
   @Get()
-  public async getAll(@Res() res: Response) {
-    const reviews = await new ModelFactory<IReviewSchema>(ReviewModel).getAll();
+  public async getAll(@Req() req: Request, @Res() res: Response) {
+    const reviews = await new ModelFactory<IReviewSchema>(ReviewModel).getAll(
+      req.query
+    );
     return Responses.Success(res, { reviews });
   }
 
