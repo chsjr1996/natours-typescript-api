@@ -16,9 +16,9 @@ import {
 import AuthMiddleware from '../middlewares/AuthMiddleware';
 import CreateUserRequest from '../requests/user/CreateUserRequest';
 import UpdateUserRequest from '../requests/user/UpdateUserRequest';
-import UserModel from '../../models/UserModel';
+import UserModel, { IUserSchema } from '../../models/UserModel';
+import ModelFactory from '../../utils/factories/ModelFactory';
 import Responses from '../../utils/builders/Responses';
-import AppError from '../../utils/helpers/AppError';
 import { whitelist } from '../../../config/validations';
 
 @JsonController('/users')
@@ -29,7 +29,9 @@ export default class UserController {
    */
   @Get('/spc/me')
   public async getMe(@Req() req: Request, @Res() res: Response) {
-    const user = await UserModel.findById(req.user.id);
+    const user = await new ModelFactory<IUserSchema>(UserModel).getOne(
+      req.user.id
+    );
     return Responses.Success(res, user);
   }
 
@@ -40,7 +42,7 @@ export default class UserController {
     @Req() req: Request,
     @Res() res: Response
   ) {
-    const user = await UserModel.findByIdAndUpdate(
+    const user = await new ModelFactory<IUserSchema>(UserModel).update(
       req.user.id,
       { name },
       { new: true }
@@ -50,11 +52,10 @@ export default class UserController {
 
   @Delete('/spc/deleteMe')
   public async deleteMe(@Req() req: Request, @Res() res: Response) {
-    const user = await UserModel.findOneAndUpdate(
+    await new ModelFactory<IUserSchema>(UserModel).softDelete(
       { _id: req.user.id, active: { $ne: false } },
       { active: false }
     );
-    if (!user) throw new AppError('User not found!', 404);
     return Responses.Success(res, null, 'Your account has been deleted!');
   }
 
@@ -64,20 +65,19 @@ export default class UserController {
 
   @Post()
   public async create(@Body() req: CreateUserRequest, @Res() res: Response) {
-    const user = await UserModel.create(req);
+    const user = await new ModelFactory<IUserSchema>(UserModel).create(req);
     return Responses.Success(res, user);
   }
 
   @Get()
   public async getAll(@Res() res: Response) {
-    const users = await UserModel.find();
+    const users = await new ModelFactory<IUserSchema>(UserModel).getAll();
     return Responses.Success(res, { users });
   }
 
   @Get('/:id')
   public async getOne(@Param('id') id: string, @Res() res: Response) {
-    const user = await UserModel.findById(id);
-    if (!user) throw new AppError('User not found!', 404);
+    const user = await new ModelFactory<IUserSchema>(UserModel).getOne(id);
     return Responses.Success(res, { user });
   }
 
@@ -87,21 +87,23 @@ export default class UserController {
     @Body(whitelist) req: UpdateUserRequest,
     @Res() res: Response
   ) {
-    const user = await UserModel.findByIdAndUpdate(id, req, {
-      new: true,
-      runValidators: true,
-    });
-    if (!user) throw new AppError('User not found!', 404);
+    const user = await new ModelFactory<IUserSchema>(UserModel).update(
+      id,
+      req,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
     return Responses.Success(res, { user });
   }
 
   @Delete('/:id')
   public async delete(@Param('id') id: string, @Res() res: Response) {
-    const user = await UserModel.findOneAndUpdate(
+    await new ModelFactory<IUserSchema>(UserModel).softDelete(
       { _id: id, active: { $ne: false } },
       { active: false }
     );
-    if (!user) throw new AppError('User not found!', 404);
     return Responses.Success(res, null, 'User has been deleted!');
   }
 }

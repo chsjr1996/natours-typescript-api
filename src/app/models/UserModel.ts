@@ -2,7 +2,7 @@ import mongoose, { Document, Schema, Model, HookNextFunction } from 'mongoose';
 import IModel from './IModel';
 import Auth from '../utils/helpers/Auth';
 
-interface IUserSchema extends Document {
+export interface IUserSchema extends Document {
   name: string;
   email: string;
   photo: string;
