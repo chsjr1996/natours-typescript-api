@@ -19,6 +19,7 @@ import UpdateTourRequestBody, {
 import TourModel, { ITourSchema } from '../../models/TourModel';
 import ModelFactory from '../../factories/ModelFactory';
 import Responses from '../../builders/Responses';
+import AppError from '../../helpers/AppError';
 
 const tourFieldOptions = multer().fields([
   {
@@ -68,6 +69,100 @@ export default class TourController {
       },
     ]);
     return Responses.Success(res, { toursStats });
+  }
+
+  @Get('/spc/monthly-plan/:year')
+  public async getMonthlyPlan(
+    @Param('year') year: string,
+    @Res() res: Response
+  ) {
+    const monthlyPlan = await TourModel.aggregate([
+      {
+        $unwind: '$startDates',
+      },
+      {
+        $match: {
+          startDates: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: '$startDates' },
+          numTourStarts: { $sum: 1 },
+          tours: { $push: '$name' },
+        },
+      },
+      {
+        $addFields: { month: '$_id' },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+      {
+        $sort: { numTourStarts: -1 },
+      },
+      {
+        $limit: 12,
+      },
+    ]);
+    return Responses.Success(res, { monthlyPlan });
+  }
+
+  @Get('/spc/tours-within/:distance/center/:latlng/unit/:unit')
+  public async getToursWithin(@Req() req: Request, @Res() res: Response) {
+    const { distance, latlng, unit } = req.params;
+    const [lat, lng] = latlng.split(',');
+    const radius =
+      unit === 'mi' ? Number(distance) / 3963.2 : Number(distance) / 6378.1;
+
+    if (!lat || !lng) {
+      new AppError(
+        'Please provide latitude and longitude in the format lat,lng.',
+        401
+      );
+    }
+    const tours = await TourModel.find({
+      startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
+    });
+    return Responses.Success(res, { results: tours.length, tours });
+  }
+
+  @Get('/spc/distances/:latlng/unit/:unit')
+  public async getToursDistances(@Req() req: Request, @Res() res: Response) {
+    const { latlng, unit } = req.params;
+    const [lat, lng] = latlng.split(',');
+    const multiplier = unit === 'mi' ? 0.000621371 : 0.001;
+
+    if (!lat || !lng) {
+      new AppError(
+        'Please provide latitude and longitude in the format lat,lng.',
+        401
+      );
+    }
+    const toursDistances = await TourModel.aggregate([
+      {
+        $geoNear: {
+          near: {
+            type: 'Point',
+            coordinates: [Number(lng) * 1, Number(lat) * 1],
+          },
+          distanceField: 'distance',
+          distanceMultiplier: multiplier,
+        },
+      },
+      {
+        $project: {
+          distance: 1,
+          name: 1,
+        },
+      },
+    ]);
+    return Responses.Success(res, { toursDistances });
   }
 
   /**
