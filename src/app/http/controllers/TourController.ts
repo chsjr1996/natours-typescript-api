@@ -16,9 +16,9 @@ import AuthMiddleware from '../middlewares/AuthMiddleware';
 import UpdateTourRequestBody, {
   UpdateTourRequest,
 } from '../requests/tour/UpdateTourRequest';
-import TourModel from '../models/TourModel';
-import Responses from '../utils/builders/Responses';
-import AppError from '../utils/helpers/AppError';
+import TourModel from '../../models/TourModel';
+import Responses from '../../utils/builders/Responses';
+import AppError from '../../utils/helpers/AppError';
 
 const tourFieldOptions = multer().fields([
   {

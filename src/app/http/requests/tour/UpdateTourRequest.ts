@@ -7,7 +7,7 @@ import {
   IsNotEmptyObject,
   IsDate,
 } from 'class-validator';
-import { ILocation, IGuide } from '../../models/TourModel';
+import { ILocation, IGuide } from '../../../models/TourModel';
 
 export default class UpdateTourRequestBody {
   @IsString()

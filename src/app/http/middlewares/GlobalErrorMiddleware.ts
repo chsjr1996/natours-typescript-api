@@ -3,7 +3,7 @@ import {
   ExpressErrorMiddlewareInterface,
 } from 'routing-controllers';
 import { Request, Response, NextFunction } from 'express';
-import envs from '../utils/envs';
+import envs from '../../../config/app';
 
 interface IError extends Error {
   statusCode: number;
@@ -20,7 +20,7 @@ export default class GlobalErrorMiddleware
     response: Response,
     next: NextFunction
   ) {
-    if (envs.isDev) {
+    if (envs.core.isDev) {
       return this.developmentError(error, response);
     }
     return this.productionError(error, response);

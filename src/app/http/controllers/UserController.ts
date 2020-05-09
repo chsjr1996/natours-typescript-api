@@ -16,10 +16,10 @@ import {
 import AuthMiddleware from '../middlewares/AuthMiddleware';
 import CreateUserRequest from '../requests/user/CreateUserRequest';
 import UpdateUserRequest from '../requests/user/UpdateUserRequest';
-import UserModel from '../models/UserModel';
-import Responses from '../utils/builders/Responses';
-import AppError from '../utils/helpers/AppError';
-import { whitelist } from '../utils/validations/config';
+import UserModel from '../../models/UserModel';
+import Responses from '../../utils/builders/Responses';
+import AppError from '../../utils/helpers/AppError';
+import { whitelist } from '../../../config/validations';
 
 @JsonController('/users')
 @UseBefore(AuthMiddleware)

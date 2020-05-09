@@ -2,7 +2,7 @@
 import express, { Express } from 'express';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
-import envs from './utils/envs';
+import envs from './config/app';
 
 export default class App {
   constructor() {
@@ -21,7 +21,7 @@ export default class App {
   /**
    * Env control var
    */
-  private isDev = envs.isDev;
+  private isDev = envs.core.isDev;
 
   /** Methods */
 
@@ -43,7 +43,7 @@ export default class App {
     if (!envs.database) {
       throw new Error('No database uri configured in .env file!');
     }
-    const DB = envs.database;
+    const DB = envs.database.connectionString;
     mongoose
       .connect(DB, {
         useNewUrlParser: true,

@@ -11,9 +11,9 @@ import {
   Body,
 } from 'routing-controllers';
 import AuthMiddleware from '../middlewares/AuthMiddleware';
-import ReviewModel from '../models/ReviewModel';
-import Responses from '../utils/builders/Responses';
-import AppError from '../utils/helpers/AppError';
+import ReviewModel from '../../models/ReviewModel';
+import Responses from '../../utils/builders/Responses';
+import AppError from '../../utils/helpers/AppError';
 
 @JsonController('/reviews')
 @UseBefore(AuthMiddleware)
