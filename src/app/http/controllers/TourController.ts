@@ -16,9 +16,9 @@ import AuthMiddleware from '../middlewares/AuthMiddleware';
 import UpdateTourRequestBody, {
   UpdateTourRequest,
 } from '../requests/tour/UpdateTourRequest';
-import TourModel from '../../models/TourModel';
+import TourModel, { ITourSchema } from '../../models/TourModel';
+import ModelFactory from '../../utils/factories/ModelFactory';
 import Responses from '../../utils/builders/Responses';
-import AppError from '../../utils/helpers/AppError';
 
 const tourFieldOptions = multer().fields([
   {
@@ -45,20 +45,19 @@ export default class TourController {
   // TODO: Type req body
   @Post()
   public async create(@Body() req: any, @Res() res: Response) {
-    const tour = await TourModel.create(req);
+    const tour = await new ModelFactory<ITourSchema>(TourModel).create(req);
     return Responses.Success(res, tour);
   }
 
   @Get()
   public async getAll(@Res() res: Response) {
-    const tours = await TourModel.find();
+    const tours = await new ModelFactory<ITourSchema>(TourModel).getAll();
     return Responses.Success(res, { tours });
   }
 
   @Get('/:id')
   public async getOne(@Param('id') id: string, @Res() res: Response) {
-    const tour = await TourModel.findById(id);
-    if (!tour) throw new AppError('Tour not found!', 404);
+    const tour = await new ModelFactory<ITourSchema>(TourModel).getOne(id);
     return Responses.Success(res, { tour });
   }
 
@@ -72,21 +71,23 @@ export default class TourController {
     @Res() res: Response
   ) {
     // TODO: Prepare upload for fields req.files.imageCover[0] and .images[n]
-    const tour = await TourModel.findByIdAndUpdate(id, body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!tour) throw new AppError('Tour not found!', 404);
+    const tour = await new ModelFactory<ITourSchema>(TourModel).update(
+      id,
+      body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
     return Responses.Success(res, { tour });
   }
 
   @Delete('/:id')
   public async delete(@Param('id') id: string, @Res() res: Response) {
-    const tour = await TourModel.findOneAndUpdate(
+    await new ModelFactory<ITourSchema>(TourModel).softDelete(
       { _id: id, active: { $ne: false } },
       { active: false }
     );
-    if (!tour) throw new AppError('Tour not found!', 404);
     return Responses.Success(res, null, 'Tour has been deleted!');
   }
 }

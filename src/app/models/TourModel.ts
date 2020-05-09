@@ -14,7 +14,7 @@ export interface IGuide {
   ref: string;
 }
 
-interface ITourSchema extends Document {
+export interface ITourSchema extends Document {
   name: string;
   slug: string;
   duration: number;
