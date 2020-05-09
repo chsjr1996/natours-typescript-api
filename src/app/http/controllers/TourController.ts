@@ -17,8 +17,8 @@ import UpdateTourRequestBody, {
   UpdateTourRequest,
 } from '../requests/tour/UpdateTourRequest';
 import TourModel, { ITourSchema } from '../../models/TourModel';
-import ModelFactory from '../../utils/factories/ModelFactory';
-import Responses from '../../utils/builders/Responses';
+import ModelFactory from '../../factories/ModelFactory';
+import Responses from '../../builders/Responses';
 
 const tourFieldOptions = multer().fields([
   {

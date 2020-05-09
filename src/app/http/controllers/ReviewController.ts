@@ -12,9 +12,9 @@ import {
 } from 'routing-controllers';
 import AuthMiddleware from '../middlewares/AuthMiddleware';
 import ReviewModel, { IReviewSchema } from '../../models/ReviewModel';
-import ModelFactory from '../../utils/factories/ModelFactory';
-import Responses from '../../utils/builders/Responses';
-import AppError from '../../utils/helpers/AppError';
+import ModelFactory from '../../factories/ModelFactory';
+import Responses from '../../builders/Responses';
+import AppError from '../../helpers/AppError';
 
 @JsonController('/reviews')
 @UseBefore(AuthMiddleware)

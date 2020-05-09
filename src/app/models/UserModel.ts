@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Model, HookNextFunction } from 'mongoose';
 import IModel from './IModel';
-import Auth from '../utils/helpers/Auth';
+import Auth from '../helpers/Auth';
 
 export interface IUserSchema extends Document {
   name: string;

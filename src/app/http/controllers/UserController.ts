@@ -17,8 +17,8 @@ import AuthMiddleware from '../middlewares/AuthMiddleware';
 import CreateUserRequest from '../requests/user/CreateUserRequest';
 import UpdateUserRequest from '../requests/user/UpdateUserRequest';
 import UserModel, { IUserSchema } from '../../models/UserModel';
-import ModelFactory from '../../utils/factories/ModelFactory';
-import Responses from '../../utils/builders/Responses';
+import ModelFactory from '../../factories/ModelFactory';
+import Responses from '../../builders/Responses';
 import { whitelist } from '../../../config/validations';
 
 @JsonController('/users')

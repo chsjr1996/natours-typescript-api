@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import envs from '../../../config/app';
+import envs from '../../config/app';
 
 export default class Auth {
   public static async hash(password: string) {
