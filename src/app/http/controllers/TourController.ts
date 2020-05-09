@@ -46,6 +46,30 @@ export default class TourController {
     return this.getAll(reqClone, res);
   }
 
+  @Get('/spc/tours-stats')
+  public async getTourStats(@Res() res: Response) {
+    const toursStats = await TourModel.aggregate([
+      {
+        $match: { ratingsAverage: { $gte: 4.5 } },
+      },
+      {
+        $group: {
+          _id: { $toUpper: '$difficulty' },
+          numTours: { $sum: 1 },
+          numRatings: { $sum: '$ratingsQuantity' },
+          avgRating: { $avg: '$ratingsAverage' },
+          avgPrice: { $avg: '$price' },
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' },
+        },
+      },
+      {
+        $sort: { avgPrice: 1 },
+      },
+    ]);
+    return Responses.Success(res, { toursStats });
+  }
+
   /**
    * CRUD operations
    */
