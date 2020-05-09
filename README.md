@@ -6,10 +6,9 @@ This repository is based on udemy course [Node.js, Express, MongoDB & More: The 
 
 ## Features
 
-  - Manage users, tours, reviews and bookings
-  - Provide rest api and web site with pug templates
-  - Use mongoDB for storage data, allowing awesome queries like geospatial
-  - Use Routing Controllers and Typescript!
+- Manage users, tours, reviews and bookings
+- Use mongoDB for storage data, allowing awesome queries like geospatial
+- Use Routing Controllers and Typescript!
 
 ---
 
