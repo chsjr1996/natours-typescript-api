@@ -1,7 +1,7 @@
 import mongoose, { Schema, Model, Document, HookNextFunction } from 'mongoose';
 import IModel from './IModel';
 
-interface IReviewSchema extends Document {
+export interface IReviewSchema extends Document {
   review: string;
   rating: number;
   createdAt: string;

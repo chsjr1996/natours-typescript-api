@@ -11,7 +11,8 @@ import {
   Body,
 } from 'routing-controllers';
 import AuthMiddleware from '../middlewares/AuthMiddleware';
-import ReviewModel from '../../models/ReviewModel';
+import ReviewModel, { IReviewSchema } from '../../models/ReviewModel';
+import ModelFactory from '../../utils/factories/ModelFactory';
 import Responses from '../../utils/builders/Responses';
 import AppError from '../../utils/helpers/AppError';
 
@@ -25,20 +26,23 @@ export default class ReviewController {
   // TODO: Type req body
   @Post()
   public async create(@Body() req: any, @Res() res: Response) {
-    const review = await ReviewModel.create(req);
+    const review = await new ModelFactory<IReviewSchema>(ReviewModel).create(
+      req
+    );
     return Responses.Success(res, { review });
   }
 
   @Get()
   public async getAll(@Res() res: Response) {
-    const reviews = await ReviewModel.find();
+    const reviews = await new ModelFactory<IReviewSchema>(ReviewModel).getAll();
     return Responses.Success(res, { reviews });
   }
 
   @Get('/:id')
   public async getOne(@Param('id') id: string, @Res() res: Response) {
-    const review = await ReviewModel.findById(id);
-    if (!review) throw new AppError('Review not found!', 404);
+    const review = await new ModelFactory<IReviewSchema>(ReviewModel).getOne(
+      id
+    );
     return Responses.Success(res, { review });
   }
 
@@ -48,21 +52,23 @@ export default class ReviewController {
     @Body() body: any,
     @Res() res: Response
   ) {
-    const review = await ReviewModel.findByIdAndUpdate(id, body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!review) throw new AppError('Review not found!', 404);
+    const review = await new ModelFactory<IReviewSchema>(ReviewModel).update(
+      id,
+      body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
     return Responses.Success(res, { review });
   }
 
   @Delete('/:id')
   public async delete(@Param('id') id: string, @Res() res: Response) {
-    const review = await ReviewModel.findOneAndUpdate(
+    await new ModelFactory<IReviewSchema>(ReviewModel).softDelete(
       { _id: id, active: { $ne: false } },
       { active: false }
     );
-    if (!review) throw new AppError('Review not found!', 404);
     return Responses.Success(res, null, 'Review has been deleted!');
   }
 }
