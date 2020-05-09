@@ -17,7 +17,7 @@ class Server {
     useExpressServer(this.app, {
       defaultErrorHandler: false,
       routePrefix: '/api/v1',
-      controllers: [__dirname + '/controllers/*.js'],
+      controllers: [__dirname + '/app/http/controllers/*.js'],
       middlewares: [GlobalErrorMiddleware],
     });
 
